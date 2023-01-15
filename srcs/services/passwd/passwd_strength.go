@@ -20,36 +20,58 @@ const (
 	repeatTreashold = 3
 )
 
+type CharTypePresence struct {
+	lowercase 	bool
+	uppercase 	bool
+	digit 		bool
+}
+
+type RepeatPresense struct {
+	repeatBegin	int
+	repeatEnd	int
+}
+
+func (cp *CharTypePresence) isComplete () bool {
+	return cp.lowercase && cp.uppercase && cp.digit
+}
+
+func GetCharTypePresence(password string) CharTypePresence {
+	contains := CharTypePresence{false, false, false}
+	for _, c := range password {
+		if unicode.IsLower(c) {
+			contains.lowercase = true
+		}
+		if unicode.IsUpper(c) {
+			contains.uppercase = true
+		}
+		if unicode.IsDigit(c) {
+			contains.digit = true
+		}
+
+		// shortcutting
+		if contains.isComplete() {
+			break
+		}
+	}
+	return contains
+}
+
+func GetRepeatPresence(password string) RepeatPresense {
+	// 
+}
+
 func IsAppropLength(password string) bool {
 	return minPasswordLen <= len(password) && len(password) <= maxPasswordLen
 }
 
 func IsAppropCharType(password string) bool {
-	containsLower := false
-	containsUpper := false
-	containsDigit := false
-
-	for _, c := range password {
-		if unicode.IsLower(c) {
-			containsLower = true
-		}
-		if unicode.IsUpper(c) {
-			containsUpper = true
-		}
-		if unicode.IsDigit(c) {
-			containsDigit = true
-		}
-
-		// shortcutting
-		if containsLower && containsUpper && containsDigit {
-			return true
-		}
-	}
-	return false
+	presense := GetCharTypePresence(password)
+	return presense.isComplete()
 }
 
 func IsAppropRepeat(password string) bool {
 	var prev rune
+	
 	repeat := 1
 	for idx, c := range password {
 		if idx != 0 {
@@ -66,3 +88,24 @@ func IsAppropRepeat(password string) bool {
 	}
 	return true
 }
+
+
+// var prev rune
+// repeat := 1
+// for idx, c := range password {
+// 	if idx != 0 {
+// 		if c == prev {
+// 			repeat += 1
+// 			rP.repeatEnd = idx
+// 		} else {
+// 			repeat = 1
+// 			rP.repeatBegin = idx+1
+// 		}
+// 	}
+// 	if repeat >= repeatTreashold {
+// 		rP.isRepeat = true
+// 		break
+// 	}
+// 	prev = c
+// }
+// return rP
