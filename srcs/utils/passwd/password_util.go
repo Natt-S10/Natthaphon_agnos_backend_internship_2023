@@ -12,7 +12,7 @@ type RepeatRange struct {
 	End   int
 }
 
-func (rR *RepeatRange) count() int {
+func (rR *RepeatRange) Count() int {
 	return rR.End - rR.Begin + 1
 }
 
@@ -24,6 +24,33 @@ type PasswordObject struct {
 	CountDigit int
 	CountSign  int
 	RepeatList []RepeatRange
+}
+
+func (pO *PasswordObject) IsMissingUpper() bool { // TODO make a test
+	return REQUIREUPPERCASE && pO.CountUpper == 0
+}
+func (pO *PasswordObject) IsMissingLower() bool { // TODO make a test
+	return REQUIRELOWERCASE && pO.CountLower == 0
+}
+func (pO *PasswordObject) IsMissingDigit() bool { // TODO make a test
+	return REQUIREDIGIT && pO.CountDigit == 0
+}
+func (pO *PasswordObject) IsMissingSign() bool { // TODO make a test
+	return REQUIRESIGN && pO.CountSign == 0
+}
+
+func (pO *PasswordObject) ReplaceN(count int) { // TODO make a test
+	for count > 0 {
+		if pO.IsMissingUpper() {
+			pO.CountUpper++
+		} else if pO.IsMissingDigit() {
+			pO.CountDigit++
+		} else if pO.IsMissingSign() {
+			pO.CountSign++
+		} else { // adding Lowercase by default
+			pO.CountLower++
+		}
+	}
 }
 
 func (pO *PasswordObject) Init(password string) *PasswordObject {
@@ -50,8 +77,8 @@ func (pO *PasswordObject) charTypeCount(c rune) {
 }
 
 func (pO *PasswordObject) match(c rune, repeat RepeatRange) {
-	dup := repeat.count()
-	if dup >= repeatTreashold {
+	dup := repeat.Count()
+	if dup >= REPEATHRESHOLD {
 		newMatch := strings.Repeat(fmt.Sprintf("%c", c), dup)
 		pO.Tokenized = append(pO.Tokenized, newMatch)
 		pO.RepeatList = append(pO.RepeatList, repeat)

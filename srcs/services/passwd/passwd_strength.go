@@ -3,6 +3,8 @@ package passwd
 import (
 	_ "fmt"
 	"unicode"
+
+	utils "github.com/Natt-S10/Natthaphon_agnos_backend_internship_2023/srcs/utils/passwd"
 )
 
 type CharTypePresence struct {
@@ -41,12 +43,13 @@ func GetCharTypePresence(password string) CharTypePresence {
 	return contains
 }
 
-func GetRepeatPresence(password string) RepeatPresense {
-	//
-}
+// func GetRepeatPresence(password string) RepeatPresense {
+// 	// return
+// 	return RepeatPresense{}
+// }
 
 func IsAppropLength(password string) bool {
-	return minPasswordLen <= len(password) && len(password) <= maxPasswordLen
+	return utils.MINPASSWORDLEN <= len(password) && len(password) <= utils.MAXPASSWORDLEN
 }
 
 func IsAppropCharType(password string) bool {
@@ -66,7 +69,7 @@ func IsAppropRepeat(password string) bool {
 				repeat = 1
 			}
 		}
-		if repeat >= repeatTreashold {
+		if repeat >= utils.REPEATHRESHOLD {
 			return false
 		}
 		prev = c

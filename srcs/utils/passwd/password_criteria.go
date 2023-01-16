@@ -3,14 +3,16 @@ package passwd
 // Criteria of Strong Password
 const (
 	// Length
-	minPasswordLen = 6
-	maxPasswordLen = 19
+	MINPASSWORDLEN = 6
+	MAXPASSWORDLEN = 19
 
 	// Char type : Presense of lowercase, uppercase, digit
-	requireLowercase = true
-	requireUppercase = true
-	requireDigit     = true
+	REQUIRELOWERCASE = true
+	REQUIREUPPERCASE = true
+	REQUIREDIGIT     = true
+	REQUIRESIGN      = false
+	// Assume total required types does not exceed MINPASSWORDLEN
 
 	// repeating-free
-	repeatTreashold = 3
+	REPEATHRESHOLD = 3
 )
