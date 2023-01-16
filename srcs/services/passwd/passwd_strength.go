@@ -5,33 +5,18 @@ import (
 	"unicode"
 )
 
-// Criteria of Strong Password
-const (
-	// Length
-	minPasswordLen = 6
-	maxPasswordLen = 19
-
-	// Char type : Presense of lowercase, uppercase, digit
-	requireLowercase = true
-	requireUppercase = true
-	requireDigit     = true
-
-	// repeating-free
-	repeatTreashold = 3
-)
-
 type CharTypePresence struct {
-	lowercase 	bool
-	uppercase 	bool
-	digit 		bool
+	lowercase bool
+	uppercase bool
+	digit     bool
 }
 
 type RepeatPresense struct {
-	repeatBegin	int
-	repeatEnd	int
+	repeatBegin int
+	repeatEnd   int
 }
 
-func (cp *CharTypePresence) isComplete () bool {
+func (cp *CharTypePresence) isComplete() bool {
 	return cp.lowercase && cp.uppercase && cp.digit
 }
 
@@ -57,7 +42,7 @@ func GetCharTypePresence(password string) CharTypePresence {
 }
 
 func GetRepeatPresence(password string) RepeatPresense {
-	// 
+	//
 }
 
 func IsAppropLength(password string) bool {
@@ -71,7 +56,7 @@ func IsAppropCharType(password string) bool {
 
 func IsAppropRepeat(password string) bool {
 	var prev rune
-	
+
 	repeat := 1
 	for idx, c := range password {
 		if idx != 0 {
@@ -88,7 +73,6 @@ func IsAppropRepeat(password string) bool {
 	}
 	return true
 }
-
 
 // var prev rune
 // repeat := 1
