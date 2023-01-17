@@ -4,8 +4,6 @@ import (
 	"github.com/Natt-S10/Natthaphon_agnos_backend_internship_2023/srcs/routes"
 )
 
-var db = make(map[string]string)
-
 func main() {
 	// r := routes.setupRouter()
 	r := routes.SetupRouter()
