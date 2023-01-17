@@ -33,6 +33,38 @@ type testCase struct {
 	expectedS int
 }
 
+func TestIsMissing(t *testing.T) {
+	newPO := PasswordObject{}
+	newPO.Init(testPassword)
+	assert.Equal(t, true, newPO.IsMissingUpper(), "test t IsMissingUpper")
+	assert.Equal(t, true, newPO.IsMissingLower(), "test t IsMissingLower")
+	assert.Equal(t, true, newPO.IsMissingDigit(), "test t IsMissingDigit")
+	assert.Equal(t, false, newPO.IsMissingSign(), "test t IsMissingSign")
+
+	newPO.CountUpper = 1
+	newPO.CountLower = 2
+	newPO.CountDigit = 3
+	newPO.CountSign = 99
+
+	assert.Equal(t, false, newPO.IsMissingUpper(), "test f IsMissingUpper")
+	assert.Equal(t, false, newPO.IsMissingLower(), "test f IsMissingLower")
+	assert.Equal(t, false, newPO.IsMissingDigit(), "test f IsMissingDigit")
+	assert.Equal(t, false, newPO.IsMissingSign(), "test f IsMissingSign")
+
+}
+
+func TestReplaceN(t *testing.T) {
+	newPO := PasswordObject{}
+	newPO.Init(testPassword)
+	n := 7
+	newPO.ReplaceN(n)
+	assert.Equal(t, 5, newPO.CountLower, fmt.Sprintf("checkLower after replace %d", n))
+	assert.Equal(t, 1, newPO.CountUpper, fmt.Sprintf("checkUpper after replace %d", n))
+	assert.Equal(t, 1, newPO.CountDigit, fmt.Sprintf("checkDigit after replace %d", n))
+	assert.Equal(t, 0, newPO.CountSign, fmt.Sprintf("checkSign after replace %d", n))
+
+}
+
 func TestCharTypeCount(t *testing.T) {
 	newPassswordObject := PasswordObject{}
 	newPassswordObject.Init(testPassword)
@@ -80,7 +112,7 @@ func TestPasswordObjectMatch(t *testing.T) {
 func TestPasswordObjectTokenize(t *testing.T) {
 	newPassswordObject := PasswordObject{}
 	newPassswordObject.Init(testPassword)
-	newPassswordObject.tokenize()
+	newPassswordObject.TokenizePassword()
 
 	expected := PasswordObject{
 		Original:   "PassworrrrdSSS12!!",

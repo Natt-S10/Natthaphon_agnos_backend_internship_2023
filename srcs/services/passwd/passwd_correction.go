@@ -33,7 +33,7 @@ func totalMissing(pO *utils.PasswordObject, passwdLen int) int {
 
 func PasswordCorrectSteps(password string) int {
 	passwordObject := utils.PasswordObject{}
-	passwordObject.Init(password)
+	passwordObject.Init(password).TokenizePassword()
 
 	passwdLen := len(password)
 	steps := 0
@@ -45,14 +45,16 @@ func PasswordCorrectSteps(password string) int {
 			if utils.MAXPASSWORDLEN < passwdLen-repeat.Count()+utils.REPEATHRESHOLD-1 { // shrink as much as it could, still to long
 				shrinked = repeat.Count() - utils.REPEATHRESHOLD + 1
 			} else { // shrink just enough
-				shrinked = utils.MAXPASSWORDLEN - passwdLen
-				leftOvered := repeat.Count() - shrinked
+				shrinked = passwdLen - utils.MAXPASSWORDLEN
+				leftOvered := shrinked - repeat.Count()
 				if leftOvered >= utils.REPEATHRESHOLD { // still Repeat, even shrinked
 					repeatLeft = append(repeatLeft, leftOvered)
 				}
 			}
 			steps += shrinked
 			passwdLen -= shrinked
+		} else { // not too long but repeat occurs
+			repeatLeft = append(repeatLeft, repeat.Count())
 		}
 	}
 
@@ -62,6 +64,11 @@ func PasswordCorrectSteps(password string) int {
 		steps += replaceable
 	}
 
+	if passwdLen > utils.MAXPASSWORDLEN {
+		erased := passwdLen - utils.MAXPASSWORDLEN
+		passwdLen = utils.MAXPASSWORDLEN
+		steps += erased
+	}
 	steps += totalMissing(&passwordObject, passwdLen)
 	return steps
 }

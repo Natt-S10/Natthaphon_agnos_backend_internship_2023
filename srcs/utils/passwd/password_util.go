@@ -50,6 +50,7 @@ func (pO *PasswordObject) ReplaceN(count int) { // TODO make a test
 		} else { // adding Lowercase by default
 			pO.CountLower++
 		}
+		count--
 	}
 }
 
@@ -89,7 +90,7 @@ func (pO *PasswordObject) match(c rune, repeat RepeatRange) {
 	}
 }
 
-func (pO *PasswordObject) tokenize() {
+func (pO *PasswordObject) TokenizePassword() {
 	var prev rune
 	repeat := RepeatRange{}
 	// append(s, encodeToUtf8(c))
