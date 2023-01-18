@@ -10,5 +10,5 @@ type LogRecord struct {
 	Status       int
 	InitPassword string
 	NumOfSteps   int
-	Error        int
+	Error        bool
 }

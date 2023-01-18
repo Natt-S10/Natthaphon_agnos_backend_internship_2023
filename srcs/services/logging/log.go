@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	INSERTSTATEMENT = `INSERT INTO log
-			VALUE ($1, $2, $3, $4, $5, $6)`
+	INSERTSTATEMENT = `INSERT INTO strong_passwd_steps_log
+			VALUES ($1, $2, $3, $4, $5, $6)`
 )
 
 func MakeSuccessLog(ctx *gin.Context, password string, steps int) models.LogRecord {
@@ -24,7 +24,7 @@ func MakeSuccessLog(ctx *gin.Context, password string, steps int) models.LogReco
 		Status:       http.StatusOK,
 		InitPassword: password,
 		NumOfSteps:   steps,
-		Error:        0,
+		Error:        false,
 	}
 	return lR
 }
@@ -35,14 +35,13 @@ func MakeErrorLog(ctx *gin.Context, password string) models.LogRecord {
 		Status:       http.StatusBadRequest,
 		InitPassword: password,
 		NumOfSteps:   0,
-		Error:        1,
+		Error:        true,
 	}
 	return lR
 }
 
 func ExecLog(db *sql.DB, lR models.LogRecord) {
 	_, err := db.Exec(INSERTSTATEMENT,
-		time.Now(),
 		lR.Timestamp,
 		lR.Route,
 		lR.Status,
@@ -50,7 +49,8 @@ func ExecLog(db *sql.DB, lR models.LogRecord) {
 		lR.NumOfSteps,
 		lR.Error)
 	if err != nil {
-		fmt.Println("Error occurs at logging request")
+		fmt.Println("Error occurs at logging request:", err)
 		panic(err)
 	}
+	fmt.Println("log successfully")
 }

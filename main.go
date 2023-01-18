@@ -9,13 +9,15 @@ import (
 )
 
 const (
-	DBTYPE        = "postgres"
-	DBHOST        = "localhost"
-	DBPORT        = 5432
-	DBUSER        = "dev"
-	DBNAME        = "api_log"
-	DBPASSWORD    = "12345678"
-	TABLETEMPLATE = `CREATE TABLE IF NOT EXISTS log (
+	DBTYPE            string = "postgres"
+	DBHOST            string = "localhost"
+	DBPORT                   = 5438
+	DBUSER            string = "dev"
+	DBNAME            string = "api_log"
+	DBPASSWORD        string = "12345678"
+	SCHEMATEMPLATE    string = "CREATE SCHEMA IF NOT EXISTS logging AUTHORIZATION "
+	USESCHEMATEMPLATE string = "set search_path to logging;"
+	TABLETEMPLATE     string = `CREATE TABLE IF NOT EXISTS strong_passwd_steps_log (
 		timestamp TIMESTAMP PRIMARY KEY,
 		route VARCHAR(50) NOT NULL,
 		status INT NOT NULL,
@@ -36,7 +38,6 @@ func connectPostgres() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
 	//ping test
 	if err = db.Ping(); err != nil {
 		panic(err)
@@ -48,14 +49,36 @@ func connectPostgres() *sql.DB {
 func createTableIfNotExists(db *sql.DB) {
 	_, err := db.Exec(TABLETEMPLATE)
 	if err != nil {
-		fmt.Println("Problem on CreateIfNotExistTable: log")
+		fmt.Println("Problem on createTableIfNotExists: strong_passwd_steps_log")
 		panic(err)
 	}
+	fmt.Println("Assure existance of strong_passwd_steps_log table")
+}
+
+func createSchemaIfNotExists(db *sql.DB) {
+	_, err := db.Exec(SCHEMATEMPLATE + DBUSER)
+	if err != nil {
+		fmt.Println("Problem on createSchemaIfNotExists: logging")
+		panic(err)
+	}
+	fmt.Println("Assure existance of logging schema")
+}
+
+func useLoggingSchema(db *sql.DB) {
+	_, err := db.Exec(USESCHEMATEMPLATE)
+	if err != nil {
+		fmt.Println("Problem on useLoggingSchema: logging")
+		panic(err)
+	}
+	fmt.Println("Use logging schema")
 }
 
 func main() {
 	// connecting postgres
 	db := connectPostgres()
+	defer db.Close()
+	createSchemaIfNotExists(db)
+	useLoggingSchema(db)
 	createTableIfNotExists(db)
 
 	// r := routes.setupRouter()
