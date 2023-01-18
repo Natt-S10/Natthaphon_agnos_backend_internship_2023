@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+    sqldb:
+        image: postgres:10.5
+        restart: always
+        environment:
+          POSTGRES_USER: dev
+          POSTGRES_PASSWORD: 12345678
+          POSTGRES_DB: api_log
+        logging:
+          options:
+            max-size: 10m
+            max-file: "3"
+        ports:
+          - '5438:5432'
+        volumes:
+          - log_data:/var/lib/postgressql/data
+    strong-pass-api:
+      # restart: always
+      build:
+        context: .
+        dockerfile: ./dockerfile
+      # image: strong-pass-api
+      ports:
+        - 8080:8080
+      links:
+      - sqldb
+volumes:
+  log_data: 
+    driver: local
