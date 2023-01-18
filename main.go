@@ -10,8 +10,8 @@ import (
 
 const (
 	DBTYPE            string = "postgres"
-	DBHOST            string = "localhost"
-	DBPORT                   = 5438
+	DBHOST            string = "sqldb"
+	DBPORT                   = 5432
 	DBUSER            string = "dev"
 	DBNAME            string = "api_log"
 	DBPASSWORD        string = "12345678"
