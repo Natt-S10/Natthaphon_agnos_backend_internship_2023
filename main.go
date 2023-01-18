@@ -13,7 +13,7 @@ const (
 	DBHOST        = "localhost"
 	DBPORT        = 5432
 	DBUSER        = "dev"
-	DBNAME        = "log"
+	DBNAME        = "api_log"
 	DBPASSWORD    = "12345678"
 	TABLETEMPLATE = `CREATE TABLE IF NOT EXISTS log (
 		timestamp TIMESTAMP PRIMARY KEY,
